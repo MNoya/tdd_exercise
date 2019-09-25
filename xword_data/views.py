@@ -42,12 +42,15 @@ class DrillView(View):
         }
 
 
-def answer(request, clue_id):
-    clue = get_object_or_404(models.Clue, pk=clue_id)
-    appearances = defaultdict(int)
-    for clue in models.Clue.objects.filter(clue_text=clue.clue_text):
-        appearances[clue.entry.entry_text] += 1
-    return render(request, 'answer.html', {
-        'entry_text': clue.entry.entry_text,
-        'appearances': dict(appearances),
-    })
+class AnswerView(View):
+    template_name = 'answer.html'
+
+    def get(self, request, clue_id, *args, **kwargs):
+        clue = get_object_or_404(models.Clue, pk=clue_id)
+        appearances = defaultdict(int)
+        for clue in models.Clue.objects.filter(clue_text=clue.clue_text):
+            appearances[clue.entry.entry_text] += 1
+        return render(request, self.template_name, {
+            'entry_text': clue.entry.entry_text,
+            'appearances': dict(appearances),
+        })

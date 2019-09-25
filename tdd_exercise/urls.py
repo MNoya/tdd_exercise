@@ -21,6 +21,6 @@ from xword_data import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.DrillView.as_view(), name='xword-drill'),
-    path('answer/<int:clue_id>', views.answer, name='xword-answer'),
+    path('answer/<int:clue_id>', views.AnswerView.as_view(), name='xword-answer'),
 
 ]
