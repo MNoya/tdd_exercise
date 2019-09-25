@@ -2,4 +2,21 @@
 
 {% block content %}
     {{ entry_text }} is the correct answer! You have now answered {{ correct_answers }} (of {{ total_answers }}) clues correctly
+
+    {% if appearances|length == 1 %}
+        This is the only appearance of this clue
+    {% else %}
+        <table>
+            <tr>
+                <th>Count</th>
+                <th>Entry</th>
+            </tr>
+            {% for entry, count in appearances.items %}
+            <tr>
+                <td>{{ count }}</td>
+                <td>{{ entry }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 {% endblock %}

@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -38,8 +40,12 @@ class DrillView(View):
 
 def answer(request, clue_id):
     clue = get_object_or_404(models.Clue, pk=clue_id)
+    appearances = defaultdict(int)
+    for clue in models.Clue.objects.filter(clue_text=clue.clue_text):
+        appearances[clue.entry.entry_text] += 1
     return render(request, 'answer.html', {
         'entry_text': clue.entry.entry_text,
         'correct_answers': request.session.get('correct_answers', 0),
-        'total_answers': request.session.get('total_answers', 1)
+        'total_answers': request.session.get('total_answers', 1),
+        'appearances': dict(appearances),
     })

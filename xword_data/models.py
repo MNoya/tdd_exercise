@@ -27,7 +27,7 @@ class Clue(models.Model):
     theme = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.entry} {self.clue_text}'
+        return f'{self.clue_text}: {self.entry}'
 
     @staticmethod
     def get_random_clue():
