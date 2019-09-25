@@ -10,6 +10,8 @@ class DrillView(View):
     template_name = 'drill.html'
 
     def get(self, request, *args, **kwargs):
+        request.session.setdefault('total_answers', 0)
+        request.session['total_answers'] += 1
         random_clue = models.Clue.get_random_clue()
         return render(request, self.template_name, context=self._get_context_for_clue(random_clue))
 
@@ -17,11 +19,12 @@ class DrillView(View):
         data = request.POST
         clue_id = data.get('clue_id')
         clue = models.Clue.objects.get(id=clue_id)
+        request.session.setdefault('correct_answers', 0)
         if data.get('answer').lower() == clue.entry.entry_text.lower():
+            request.session['correct_answers'] += 1
             return redirect(reverse('xword-answer', kwargs={"clue_id": clue.id}))
         else:
             messages.error(request, "Answer is not correct")
-            # TODO: Save correct/incorret answers in session
             return render(request, self.template_name, self._get_context_for_clue(clue))
 
     @staticmethod
@@ -34,4 +37,9 @@ class DrillView(View):
 
 
 def answer(request, clue_id):
-    return render(request, 'answer.html', {})
+    clue = get_object_or_404(models.Clue, pk=clue_id)
+    return render(request, 'answer.html', {
+        'entry_text': clue.entry.entry_text,
+        'correct_answers': request.session.get('correct_answers', 0),
+        'total_answers': request.session.get('total_answers', 1)
+    })
