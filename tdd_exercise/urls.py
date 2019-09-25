@@ -20,7 +20,7 @@ from xword_data import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.drill, name='xword-drill'),
+    path('', views.DrillView.as_view(), name='xword-drill'),
     path('answer/<int:clue_id>', views.answer, name='xword-answer'),
 
 ]
