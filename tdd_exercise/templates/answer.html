@@ -1,11 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {{ entry_text }} is the correct answer! You have now answered {{ correct_answers }} (of {{ total_answers }}) clues correctly
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
 
     {% if appearances|length == 1 %}
+        <b>Correct answer:</b> {{ entry_text }}<br>
         This is the only appearance of this clue
     {% else %}
+        <b>Correct answers:</b><br>
         <table>
             <tr>
                 <th>Count</th>

@@ -22,8 +22,12 @@ class DrillView(View):
         clue_id = data.get('clue_id')
         clue = models.Clue.objects.get(id=clue_id)
         request.session.setdefault('correct_answers', 0)
+        request.session.setdefault('total_answers', 1)
         if data.get('answer').lower() == clue.entry.entry_text.lower():
             request.session['correct_answers'] += 1
+            messages.error(request, f"{clue.entry.entry_text} is the correct answer! "
+                                    f"You have now answered {request.session['correct_answers']} "
+                                    f"(of {request.session['total_answers']}) clues correctly")
             return redirect(reverse('xword-answer', kwargs={"clue_id": clue.id}))
         else:
             messages.error(request, "Answer is not correct")
@@ -45,7 +49,5 @@ def answer(request, clue_id):
         appearances[clue.entry.entry_text] += 1
     return render(request, 'answer.html', {
         'entry_text': clue.entry.entry_text,
-        'correct_answers': request.session.get('correct_answers', 0),
-        'total_answers': request.session.get('total_answers', 1),
         'appearances': dict(appearances),
     })
