@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <b>Puzzle:</b> {{ puzzle }}
+    <br>
+    <b>Clue:</b> {{ clue_text }}
+    <br>
+    <form action="" method="post">
+        {% csrf_token %}
+        <b>Your answer:</b>
+        <input type="hidden" name="clue_id" value={{ clue_id }}>
+        <input name="answer" type="text">
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <br>
+    <a href="{% url 'xword-answer' clue_id %}">View Answer</a>
+{% endblock %}
