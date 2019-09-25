@@ -1,3 +1,5 @@
+from random import randint
+
 from django.db import models
 
 
@@ -26,3 +28,8 @@ class Clue(models.Model):
 
     def __str__(self):
         return f'{self.entry} {self.clue_text}'
+
+    @staticmethod
+    def get_random_clue():
+        clue_count = Clue.objects.count()
+        return Clue.objects.all()[randint(0, clue_count - 1)]
