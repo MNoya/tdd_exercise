@@ -1,0 +1,8 @@
+Suggestions:
+
+1. Move folder `fixtures` to be inside the xword_data app, that way Django will automatically recognize it as a fixture when using `loaddata xword_data`, or ff you want to keep the discoverability of having the fixtures folder outside of the app, you can set `FIXTURE_DIRS` in settings.py to match the fixtures root-level folder (followed this approach in my exercise )
+
+2. There is a couple of use cases which are not handled by the tests, meaning it is possible to pass the tests with code that includes unwanted behavior:
+    * When accessing an answer directly via URL or the "escape hatch", the view should not show the congratulation for a successfull guess. I added this test case in https://github.com/MNoya/tdd_exercise/commit/ab25239586782009ea4d4e12d5c297949b8350b9 and a fix in a subsequent commit.
+    * By hardcoding the "1 (of 3)" message in the view, it is possible to pass the tests without actually implementing some type of storage (in my case I used django's default session storage for simplicity). While the test_drill_messaging is usefull in explaining the requirement of storing correct & total answers and the expected behavior when refreshing the page, it doesn't verify the values in the message are correct. In true TDD fashion we should only write the minimal code that passes the tests, so I added a sub test case for this failing scenario in https://github.com/MNoya/tdd_exercise/commit/107b3d996f534fa23e0275620fc1b586ba69ba97 and a fix in the next commit.
+    
