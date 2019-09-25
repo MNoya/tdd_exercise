@@ -111,3 +111,12 @@ class TestAnswerView(TestCase):
         # Rely on DB not using primary key value of 0
         response = self.client.get(reverse("xword-answer", args=(0,)))
         self.assertEqual(404, response.status_code)
+
+    def test_answer_get_directly(self):
+        # When reached via the "escape hatch", this view should not display messaging data
+        clue = Clue.get_random_clue()
+        response = self.client.get(reverse("xword-answer", args=(clue.pk,)))
+        self.assertEqual(200, response.status_code)
+        self.assertNotContains(response, f"is the correct answer!")
+        self.assertNotContains(response, f"You have now answered")
+        self.assertNotContains(response, f"answers correctly")
