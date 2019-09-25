@@ -57,12 +57,28 @@ class TestDrillView(TestCase):
             "clue_id": clue.id,
             "answer": clue.entry.entry_text
         }
-        response = self.client.post(self.url, data=data, follow=True)
-        self.assertRedirects(response, reverse('xword-answer', args=(clue.id,)))
-        # Answer page should show status of how many correct answers have been provided.
-        self.assertContains(
-            response,
-            f"{clue.entry.entry_text} is the correct answer! You have now answered 1 (of 3) clues correctly")
+
+        with self.subTest('add 1st correct answer'):
+            response = self.client.post(self.url, data=data, follow=True)
+            self.assertRedirects(response, reverse('xword-answer', args=(clue.id,)))
+            # Answer page should show status of how many correct answers have been provided.
+            self.assertContains(
+                response,
+                f"{clue.entry.entry_text} is the correct answer! You have now answered 1 (of 3) clues correctly")
+
+        # Request the page a 4th time and provider another correct answer
+        response = self.client.get(self.url)
+        clue = Clue.objects.get(pk=response.context["clue_id"])
+        data = {
+            "clue_id": clue.id,
+            "answer": clue.entry.entry_text
+        }
+
+        with self.subTest('add 2nd correct answer'):
+            response = self.client.post(self.url, data=data, follow=True)
+            self.assertContains(
+                response,
+                f"{clue.entry.entry_text} is the correct answer! You have now answered 2 (of 4) clues correctly")
 
 
 class TestAnswerView(TestCase):
